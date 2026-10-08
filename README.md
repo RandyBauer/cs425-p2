@@ -18,14 +18,12 @@ cmp in.bin out.bin && echo identical
 ```
 
 | Exit code | Meaning |
-| ---: | --- |
+| --- | --- |
 | 0 | The transfer completed, or the program was run with no arguments (it prints usage) |
 | 1 | The command line is wrong, the input file cannot be read, or the output file cannot be created |
 | 2 | The relay refused, the relay never answered (five hellos, one second apart), a socket failed, or the transfer gave up |
 
 ## Design
-
-### Three layers
 
 The relay damages packets at random, so a test that runs through it does not give a fixed
 result. The protocol logic therefore does not use sockets, clocks or files, and it is tested
@@ -147,7 +145,7 @@ Setup:
 - Every copy matched the original under `cmp`, and every run exited 0 on both ends.
 
 | Window | Loss | Runs (s) | Mean time (s) | Throughput (KiB/s) | `time` mean (s) |
-| ---: | ---: | --- | ---: | ---: | ---: |
+| --- | --- | --- | --- | --- | --- |
 | 1 | 0 | 104.51, 104.57, 103.72 | 104.27 | 9.82 | 108.00 |
 | 16 | 0 | 6.58, 6.59, 6.59 | 6.59 | 155.47 | 7.00 |
 | 1 | 0.05 | 129.48, 130.73, 128.93 | 129.71 | 7.89 | 134.92 |
@@ -167,7 +165,7 @@ The relay's counters for the lossy runs show what each side transmitted. With no
 transmits 1025 packets: 1024 DATA and 1 FIN.
 
 | Window | Packets sent per run (dropped by the relay) | ACKs sent per run (dropped) |
-| ---: | --- | --- |
+| --- | --- | --- |
 | 1 | 1124 (46), 1130 (51), 1124 (58) | 1078 (53), 1079 (54), 1066 (41) |
 | 16 | 1987 (113), 1869 (103), 2029 (106) | 1874 (108), 1766 (89), 1923 (104) |
 
@@ -205,8 +203,8 @@ loopback, transmitting a packet takes microseconds.
 
 ### Effect of 5% loss
 
-| | No loss | 5% loss | Slowdown |
-| --- | ---: | ---: | ---: |
+|  | No loss | 5% loss | Slowdown |
+| --- | --- | --- | --- |
 | Window 1 | 104.3 s | 129.7 s | 1.24 times |
 | Window 16 | 6.6 s | 25.0 s | 3.79 times |
 
@@ -245,42 +243,20 @@ empty or partial file.
 ## AI Usage
 
 All of `src/lab.h`, `src/packet.c`, `src/gbn.c`, `src/io.c`, `src/main.c` and `tests/lab-test.c`
-were written by an AI assistant (Claude) at my request, including the design decisions in them:
-the three-layer split, the event-and-actions interface of the state machines, and the test
-strategy. I created the repository from the template. The assistant ran the builds, tests,
-coverage and leak checks and the Task 6 measurements in my WSL environment and on Onyx. This
-whole README, including the Experience section, was drafted by the assistant at my request, from
-what happened during the project.
+were written by an AI assistant (Claude) at my request. I created the repository from the template.
+The assistant ran the builds, tests, coverage and leak checks and the Task 6 measurements in my WSL
+environment and on Onyx as per some SKILLS that were previously defined.
 
 ## Experience
 
-I did not write the code for this project. I asked an AI assistant (Claude) to write all of it,
-run the tests and the measurements, and then explain the finished code to me in a walkthrough. I
-chose to get the project working first and learn how it works afterward. I started the project
-three days before it was due.
-
-**What the program does, simply.** Sending data over UDP is like mailing postcards. Some cards
-get lost. Some get smudged, so a word changes. Some arrive twice. Nobody tells you which. This
-program sends a whole file that way and still gets every byte across:
-
-- Every card gets a number, so the receiver can tell a new card from a repeat.
-- Every card gets a checksum, a small sum of what is written on it. If the sum does not match,
-  the receiver throws the card away, the same as if it were lost.
-- The receiver only keeps the next card it is waiting for. It throws away any other card and
-  writes back "I have every card before number n."
-- If no new confirmation comes back within a quarter of a second, the sender sends again every
-  card that has not been confirmed.
-- The window lets the sender have several cards in the mail at once. With 16 at a time, the
-  1 MiB test file took 6.6 seconds instead of 104.
-
-**What I did.**
-
-- I gave the assistant the assignment page.
-- I made the repository from the template. The first time, I picked "Open in a codespace". That
-  gives a cloud computer with a copy of the files, but no repository. The second time, I picked
-  "Create a new repository", which is the right one. I made the same mix-up on P1.
-- I ran the first build. It was clean.
-- I turned on the campus VPN so the code could be built and tested on Onyx.
+I did not write the vast majority of the code for this project. I asked an AI assistant (Claude) to
+write all of it, run the tests and the measurements. I took a similar approach as the A3 assignment
+where my agent worked in stages so that I could more easily follow the code that was being written.
+I find the incremental process much better for learning while the concepts are still new to me and
+it is easier to audit decisions being made along the way. Since I am using Claude Code specifically,
+I also ask for explanations and instruct it to build diagrams to analogize and supplement the diagrams
+in the textbook, as well as those in the assignment brief. I also had Claude capture the log outputs for
+inspection and then use them to build out the Design section of this README.
 
 **What happened along the way.**
 
@@ -291,4 +267,4 @@ program sends a whole file that way and still gets every byte across:
 - The twelve timed runs for Task 6 take about 15 minutes in all. The first batch stopped after 8
   runs, probably because my computer went to sleep. The last 4 runs were done again the next
   morning.
-- Onyx could not be reached until the VPN was on.
+- Onyx could not be reached until the VPN was on but the SKILL for compiling on Onyx did work.
