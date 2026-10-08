@@ -250,13 +250,13 @@ environment and on Onyx as per some SKILLS that were previously defined.
 ## Experience
 
 I did not write the vast majority of the code for this project. I asked an AI assistant (Claude) to
-write all of it, run the tests and the measurements. I took a similar approach as the A3 assignment
+write most of it, run the tests and the measurements. I took a similar approach as the A3 assignment
 where my agent worked in stages so that I could more easily follow the code that was being written.
 I find the incremental process much better for learning while the concepts are still new to me and
 it is easier to audit decisions being made along the way. Since I am using Claude Code specifically,
 I also ask for explanations and instruct it to build diagrams to analogize and supplement the diagrams
 in the textbook, as well as those in the assignment brief. I also had Claude capture the log outputs for
-inspection and then use them to build out the Design section of this README.
+inspection and then use them to build out the Results section of this README.
 
 **What happened along the way.**
 
