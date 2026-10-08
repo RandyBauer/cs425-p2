@@ -54,3 +54,6 @@ dkms.conf
 /myprogram
 /build
 /.vscode/c_cpp_properties.json
+
+# P2 transfer files: in.bin, out.bin, 1mib.bin. Never commit them
+*.bin
